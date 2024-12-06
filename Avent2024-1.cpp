@@ -16,8 +16,6 @@ int main()
 	cout << "\n reading file\n--------";
 	string fileInfo = readFile("Puzzles\\AdventDay2.txt");
 
-	cout << fileInfo;
-
 	cout<< "\n parsing file\n---------";
 	parseReports(fileInfo,Reports);
 
