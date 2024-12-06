@@ -4,7 +4,7 @@ using namespace std;
 
 string readFile()
 {
-   string fileName = "AdventDay1.txt"; // Path to file
+   string fileName = "Puzzles\\AdventDay1.txt"; // Path to file
    string line; // holds the current line being read
    string outputString; // String to add each line to from file'
 
