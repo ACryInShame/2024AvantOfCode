@@ -2,9 +2,8 @@
 #include <string>
 using namespace std;
 
-string readFile()
+string readFile(string fileName)
 {
-   string fileName = "Puzzles\\AdventDay1.txt"; // Path to file
    string line; // holds the current line being read
    string outputString; // String to add each line to from file'
 
