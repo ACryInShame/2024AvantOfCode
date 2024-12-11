@@ -1,23 +1,12 @@
 // Functions used for day 1 of Advant of code 2024
 #pragma once
-#include <iostream>
 #include <list>
 #include <algorithm>
 #include <string>
-#include "ReadFile.cpp"
 #include <numeric>
+#include "ReadFile.cpp"
+#include "TestMessage.cpp"
 using namespace std;
-
-
-// function for printing the elements in a list
-void showlist(list<int> L)
-{
-	list<int>::iterator it;
-	std::for_each (L.begin(),L.end(),[](int num)
-	{
-	cout << num << " ";
-	});
-}
 
 void CreateDifferenceList(list<int> L1,list<int> L2,list<int>& L3)
 {

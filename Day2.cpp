@@ -6,11 +6,12 @@
 #include <algorithm>
 #include "ReadFile.cpp"
 #include "TestMessage.cpp"
+#include "ShowList.cpp"
 using namespace std;
 
 bool  TestValues(list<int> L,bool IsDampenerOn);
-void showlist(list<int> L);
 int safeCount = 0;
+string FileName = "Puzzles\\AdventDay2.txt";
 
 void parseReports (string input, list<list<int>>& DynamicArray)
 {
@@ -200,12 +201,6 @@ bool  TestValues(list<int> L,bool IsDampenerOn)
 
 void Day2Part1 ()
 {
-	string FileName;
-	if (Testing)
-	FileName = "Puzzles\\AdventDay2 - TEST.txt";
-	else
-	FileName = "Puzzles\\AdventDay2.txt";
-
    list<list<int>> DynamicArray;
 
 	cout << "reading file\n--------\n";
@@ -232,12 +227,6 @@ void Day2Part1 ()
 
 void Day2Part2 ()
 {
-	string FileName;
-	if (Testing)
-	FileName = "Puzzles\\AdventDay2 - TEST.txt";
-	else
-	FileName = "Puzzles\\AdventDay2.txt";
-
 	list<list<int>> DynamicArray;
 
 	cout << "reading file\n--------\n";
