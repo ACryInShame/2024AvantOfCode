@@ -8,8 +8,9 @@
 #include "TestMessage.cpp"
 using namespace std;
 
-void StringToInts (list<int> IntList);
+bool  TestValues(list<int> L,bool IsDampenerOn);
 void showlist(list<int> L);
+int safeCount = 0;
 
 void parseReports (string input, list<list<int>>& DynamicArray)
 {
@@ -50,13 +51,42 @@ void parseReports (string input, list<list<int>>& DynamicArray)
    };
 }
 
+//This is used to check if a report is safe if you remove one of the levels.
+//This will check new lists varients with 1 level missing.
+//ProgramerNote: This may be overkill for this solution
+bool Dampener (list<int> L)
+{
+	TestMessage("\nDampener Triggered\n");
+	showlist(L);
+	cout << endl;
+	for (int i = 0; i < L.size();i++)
+	{
+		// Copy the list, advance to the current number being checked in for loop
+		// remove the number from the new list
+		// check and edited list
+		list<int> newL = L;
+		auto iterator = newL.begin();
+		advance(iterator,i);
+		TestMessage("Check for spot " + to_string(i) + " which is " + to_string(*iterator) +":");
+		iterator = newL.erase(iterator);
+		if (Testing)
+		{showlist(newL);TestMessage("\n");}
+
+		//test new list and return true if test passes
+		if (TestValues(newL,false))
+			return true;
+	}
+
+	// if all new checks fail, then dampener failed
+	return false;
+}
+
 // function for printing the elements in a list
 bool  TestValues(list<int> L,bool IsDampenerOn)
 {
 	//set variables
 	int lastNum = -1;
 	int CurrentNum = 0;
-	bool DampenerTriggered = false;
 	bool isIncreasing = false;
 	bool isDecreasing = false;
 
@@ -83,12 +113,14 @@ bool  TestValues(list<int> L,bool IsDampenerOn)
 		// If dampening is on, test if it's been triggered, if not skip to next number
 		// do not update "Last numeber" as the current number is going to be ignored.
 		if (CurrentNum == lastNum)
-			if (IsDampenerOn && !DampenerTriggered)
+			if (IsDampenerOn)
 				{
-					DampenerTriggered = true;
-					TestMessage("X ");
-					++iterator;
-					continue;
+					TestMessage(" x ");
+					return Dampener(L);
+					//DampenerTriggered = true;
+					//
+					//++iterator;
+					//continue;
 				}
 			else
 			{ TestMessage("\nfailed Same check\n"); return 0;}
@@ -99,12 +131,14 @@ bool  TestValues(list<int> L,bool IsDampenerOn)
 		// If dampening is on, test if it's been triggered, if not skip to next number
 		// do not update "Last numeber" as the current number is going to be ignored.
 		if (difference < 0 || difference > 3)
-			if (IsDampenerOn && !DampenerTriggered)
+			if (IsDampenerOn)
 				{
-					DampenerTriggered = true;
-					TestMessage("X ");
-					++iterator;
-					continue;
+					TestMessage(" x ");
+					return Dampener(L);
+					//DampenerTriggered = true;
+					//
+					//++iterator;
+					//continue;
 				}
 			else
 			{
@@ -126,23 +160,27 @@ bool  TestValues(list<int> L,bool IsDampenerOn)
 		} 
 		else 
 			if (isIncreasing == true && CurrentNum < lastNum)
-				if (IsDampenerOn && !DampenerTriggered)
+				if (IsDampenerOn)
 				{
-					DampenerTriggered = true;
-					TestMessage("X ");
-					++iterator;
-					continue;
+					TestMessage(" x ");
+					return Dampener(L);
+					//DampenerTriggered = true;
+					//
+					//++iterator;
+					//continue;
 				}
 				else
 				{ TestMessage("\nfailed increasing check\n"); return 0;}
 			else 
 				if (isDecreasing == true && CurrentNum > lastNum)
-					if (IsDampenerOn && !DampenerTriggered)
+					if (IsDampenerOn)
 					{
-						DampenerTriggered = true;
-						TestMessage("X ");
-						++iterator;
-						continue;
+						TestMessage(" x ");
+						return Dampener(L);
+						//DampenerTriggered = true;
+						//
+						//++iterator;
+						//continue;
 					}
 				else
 				{ TestMessage("\nFailed Decreasing check\n");return 0;}
@@ -159,11 +197,15 @@ bool  TestValues(list<int> L,bool IsDampenerOn)
 //--------------------------------------------------------------------------
 //----------------------------Main process----------------------------------
 //--------------------------------------------------------------------------
-int safeCount = 0;
-string FileName = "Puzzles\\AdventDay2.txt";
 
 void Day2Part1 ()
 {
+	string FileName;
+	if (Testing)
+	FileName = "Puzzles\\AdventDay2 - TEST.txt";
+	else
+	FileName = "Puzzles\\AdventDay2.txt";
+
    list<list<int>> DynamicArray;
 
 	cout << "reading file\n--------\n";
@@ -190,6 +232,12 @@ void Day2Part1 ()
 
 void Day2Part2 ()
 {
+	string FileName;
+	if (Testing)
+	FileName = "Puzzles\\AdventDay2 - TEST.txt";
+	else
+	FileName = "Puzzles\\AdventDay2.txt";
+
 	list<list<int>> DynamicArray;
 
 	cout << "reading file\n--------\n";
