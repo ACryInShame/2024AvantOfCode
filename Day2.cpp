@@ -51,56 +51,103 @@ void parseReports (string input, list<list<int>>& DynamicArray)
 }
 
 // function for printing the elements in a list
-bool  TestValues(list<int> L)
+bool  TestValues(list<int> L,bool IsDampenerOn)
 {
 	//set variables
 	int lastNum = -1;
-	int CurrentNum=0;
+	int CurrentNum = 0;
+	bool DampenerTriggered = false;
 	bool isIncreasing = false;
 	bool isDecreasing = false;
+
+	auto iterator = L.begin();
 
 	TestMessage("Testing Report: ");
 
 	//loop the list
 	for (int i:L)
 	{
-		CurrentNum = L.front();
-		 TestMessage(to_string(CurrentNum) + " ");
-		//if first number just set and go to next
+		//update current number
+		CurrentNum = *iterator;
+		TestMessage(to_string(CurrentNum) + " ");
+
+		//if first number, set and go to next
 		if(lastNum == -1)
 		{
 			lastNum = CurrentNum;
-			L.pop_front();
+			++iterator;
 			continue;
 		}
 
 		// check if numbers are the same
+		// If dampening is on, test if it's been triggered, if not skip to next number
+		// do not update "Last numeber" as the current number is going to be ignored.
 		if (CurrentNum == lastNum)
-		{ TestMessage("\nfailed Same check\n"); return 0;}
-
-		//Test if numbers are increasing or decreasing
-		// if both false then hasent been checked yet
-		if ( isIncreasing == false && isDecreasing == false)
-		{
-			if (CurrentNum > lastNum)
-				{isIncreasing = true; TestMessage("^");}
+			if (IsDampenerOn && !DampenerTriggered)
+				{
+					DampenerTriggered = true;
+					TestMessage("X ");
+					++iterator;
+					continue;
+				}
 			else
-				{isDecreasing = true; TestMessage("V");}
-		} else if (isIncreasing == true && CurrentNum < lastNum)
-		{ TestMessage("\nfailed increasing check\n"); return 0;}
-		else if (isDecreasing == true && CurrentNum > lastNum)
-		{ TestMessage("\nFailed Decreasing check\n");return 0;}
+			{ TestMessage("\nfailed Same check\n"); return 0;}
 
 		int difference = abs(lastNum - CurrentNum);
 	
 		//test if differnce in numbers are between 1 and 3
+		// If dampening is on, test if it's been triggered, if not skip to next number
+		// do not update "Last numeber" as the current number is going to be ignored.
 		if (difference < 0 || difference > 3)
+			if (IsDampenerOn && !DampenerTriggered)
+				{
+					DampenerTriggered = true;
+					TestMessage("X ");
+					++iterator;
+					continue;
+				}
+			else
 			{
 				TestMessage("\nFailed difference check " + to_string(difference) + "\n");
 				return 0;
 			}
 
-		L.pop_front();
+		//Test if numbers are increasing or decreasing
+		// if both false then hasent been checked yet
+		// If dampening is on, test if it's been triggered, if not skip to next number
+		// do not update "Last numeber" as the current number is going to be ignored.
+		// if 
+		if ( isIncreasing == false && isDecreasing == false)
+		{
+			if (CurrentNum > lastNum)
+				{isIncreasing = true; TestMessage("^ ");}
+			else
+				{isDecreasing = true; TestMessage("V ");}
+		} 
+		else 
+			if (isIncreasing == true && CurrentNum < lastNum)
+				if (IsDampenerOn && !DampenerTriggered)
+				{
+					DampenerTriggered = true;
+					TestMessage("X ");
+					++iterator;
+					continue;
+				}
+				else
+				{ TestMessage("\nfailed increasing check\n"); return 0;}
+			else 
+				if (isDecreasing == true && CurrentNum > lastNum)
+					if (IsDampenerOn && !DampenerTriggered)
+					{
+						DampenerTriggered = true;
+						TestMessage("X ");
+						++iterator;
+						continue;
+					}
+				else
+				{ TestMessage("\nFailed Decreasing check\n");return 0;}
+
+		++iterator;
 		lastNum = CurrentNum;
 	}
 	// end of for each
@@ -113,13 +160,14 @@ bool  TestValues(list<int> L)
 //----------------------------Main process----------------------------------
 //--------------------------------------------------------------------------
 int safeCount = 0;
+string FileName = "Puzzles\\AdventDay2.txt";
 
 void Day2Part1 ()
 {
    list<list<int>> DynamicArray;
 
 	cout << "reading file\n--------\n";
-	string fileInfo = readFile("Puzzles\\AdventDay2.txt");
+	string fileInfo = readFile(FileName);
 
 	cout<< "parsing file\n---------\n";
 	parseReports(fileInfo, DynamicArray);
@@ -131,7 +179,7 @@ void Day2Part1 ()
 	(DynamicArray.begin(),DynamicArray.end(), [](const std::list<int> innerList)
 	{
 		// test the set of values
-		bool isSafe = TestValues(innerList);
+		bool isSafe = TestValues(innerList,false);
 		TestMessage("\n is Safe: " + to_string(isSafe) + "\n");
 		if (isSafe)
 			safeCount++;
@@ -142,5 +190,26 @@ void Day2Part1 ()
 
 void Day2Part2 ()
 {
-	
+	list<list<int>> DynamicArray;
+
+	cout << "reading file\n--------\n";
+	string fileInfo = readFile(FileName);
+
+	cout<< "parsing file\n---------\n";
+	parseReports(fileInfo, DynamicArray);
+
+	// Check every set of reports and report back safe (1) or unsafe (0). 
+	// Keep count of safe reports
+	//loop each report and test
+	for_each
+	(DynamicArray.begin(),DynamicArray.end(), [](const std::list<int> innerList)
+	{
+		// test the set of values
+		bool isSafe = TestValues(innerList,true);
+		TestMessage("\n is Safe: " + to_string(isSafe) + "\n");
+		if (isSafe)
+			safeCount++;
+	});
+
+	cout<< "Safe reports: "<< safeCount <<"\n---------\n";
 }
