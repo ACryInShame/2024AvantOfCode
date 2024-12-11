@@ -1,4 +1,5 @@
 // Functions used for day 2 of Advant of code 2024
+#pragma once
 #include <string>
 #include <list>
 #include <iostream>
@@ -136,5 +137,10 @@ void Day2Part1 ()
 			safeCount++;
 	});
 
-	cout<< safeCount << " Safe reports\n---------";
+	cout<< "Safe reports: "<< safeCount <<"\n---------\n";
+}
+
+void Day2Part2 ()
+{
+	
 }

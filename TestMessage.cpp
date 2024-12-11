@@ -1,6 +1,6 @@
 #include <iostream>
 
-bool Testing = true;
+bool Testing = false;
 
 void TestMessage (string Message)
 {
