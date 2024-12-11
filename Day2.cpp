@@ -2,6 +2,8 @@
 #include <string>
 #include <list>
 #include <iostream>
+#include <algorithm>
+#include "ReadFile.cpp"
 #include "TestMessage.cpp"
 using namespace std;
 
@@ -104,4 +106,35 @@ bool  TestValues(list<int> L)
 
 	//if past all tests then set to safe(1)
 	return 1;
+}
+
+//--------------------------------------------------------------------------
+//----------------------------Main process----------------------------------
+//--------------------------------------------------------------------------
+int safeCount = 0;
+
+void Day2Part1 ()
+{
+   list<list<int>> DynamicArray;
+
+	cout << "reading file\n--------\n";
+	string fileInfo = readFile("Puzzles\\AdventDay2.txt");
+
+	cout<< "parsing file\n---------\n";
+	parseReports(fileInfo, DynamicArray);
+
+	// Check every set of reports and report back safe (1) or unsafe (0). 
+	// Keep count of safe reports
+	//loop each report and test
+	for_each
+	(DynamicArray.begin(),DynamicArray.end(), [](const std::list<int> innerList)
+	{
+		// test the set of values
+		bool isSafe = TestValues(innerList);
+		TestMessage("\n is Safe: " + to_string(isSafe) + "\n");
+		if (isSafe)
+			safeCount++;
+	});
+
+	cout<< safeCount << " Safe reports\n---------";
 }
