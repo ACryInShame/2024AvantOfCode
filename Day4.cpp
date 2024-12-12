@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include <cmath>
 #include "ReadFile.cpp"
 #include "TestMessage.cpp"
 using namespace std;
@@ -18,6 +19,7 @@ enum Direction
 
 vector<vector<char>> parsingToMatrix (string input);
 int wordSearch(string word);
+int XwordSearch(string word);
 int findWord (int Row,int Col,string word,Direction D);
 vector<vector<char>> WordPuzzle;
 
@@ -51,7 +53,40 @@ void Day4Part1 ()
    }
 
    int count = wordSearch("XMAS");
-   cout<< "XMAS appears " << count<< " Times";   
+   cout<< "XMAS appears " << count<< " Times";
+}
+
+void Day4Part2 ()
+{
+   string FileName;
+	if (Testing)
+	   FileName = "Puzzles\\AdventDay4 - TEST.txt";
+	else
+	   FileName = "Puzzles\\AdventDay4.txt";
+
+	cout << "reading file\n--------\n";
+	string fileInfo = readFile(FileName);
+   cout<< fileInfo << endl;
+
+   cout<< "parsing file to Array\n---------\n";
+   WordPuzzle = parsingToMatrix(fileInfo);
+
+   TestMessage("---WordPuzzle---\n");
+   if (Testing == true)
+   {
+      for (int i = 0; i < WordPuzzle.size(); i++) 
+      {
+        for (int j = 0; j < WordPuzzle[0].size(); j++) 
+        {
+            TestMessage(string(1,WordPuzzle[i][j]));
+        }
+        TestMessage("\n");
+      }
+   }
+
+   int count = XwordSearch("MAS");
+   cout<< "MAS appears " << count<< " Times";
+
 }
 
 vector<vector<char>> parsingToMatrix (string input)
@@ -193,4 +228,111 @@ int findWord (int row,int col,string word,Direction D)
    }
 
    return 1; // if loop finishes then word was found
+}
+
+// finds a word in a matrix that crosses over itself. only works with odd length words
+int XwordSearch(string word)
+{
+   // if words has even letters, return 0
+   if (word.size()%2==0)
+      return 0;
+   
+   int count=0; // number of times word is found
+   int middleLoc = word.size()/2; // middle letter of word (will found down but strings are an array so this works)
+
+
+   TestMessage("--XwordSearch--\n");
+   TestMessage("Middle pos:"+ to_string(middleLoc) + "\n");
+   //get first letter of the word
+   char firstLetter = word[0];
+   TestMessage("First Letter:"+ string(1, firstLetter) + "\n");
+   int offset = middleLoc*2;//middleLoc*2 to get distance from other corners
+
+   //check each letter in matrix (WordPuzzle)
+   for (int row = 0; row < WordPuzzle.size(); row++) 
+   {
+      for (int col = 0; col < WordPuzzle[0].size(); col++) 
+      {
+         // if letter checked equals the first letter then check if it crosses
+         if(WordPuzzle[row][col] == firstLetter)
+         {
+            //after letter is found check diagnal directions for word
+            // if found (returned 1) then search again but new locations being 
+            // oposite corners (if the full crossing words was a box)
+            //Box example
+            //M S
+            // A
+            //M S
+            TestMessage("Found Letter:"+to_string(row)+","+to_string(col)+"\n");
+            if (findWord(row,col,word,UpLeft) == 1) //Bottom right conner of box
+            {
+               //if a second word is found then they cross
+               if (findWord(row-offset,col,word,DownLeft) == 1) // check top right
+                  {
+                     TestMessage("Found Cross:A\n");
+                     count ++;
+                     //continue; //find next letter
+                  }
+               if (findWord(row,col-offset,word,UpRight) == 1) //check bottom left
+                  {
+                     TestMessage("Found Cross:B\n");
+                     count ++;
+                     //continue; //find next letter
+                  }
+            }
+            if (findWord(row,col,word,UpRight) == 1) //Bottom Left conner of box
+            {
+               //if a second word is found then they cross
+               if (findWord(row-offset,col,word,DownRight) == 1) //check top left
+                  {
+                     TestMessage("Found Cross:C\n");
+                     count ++;
+                     //continue; //find next letter
+                  }
+               if (findWord(row,col+offset,word,UpLeft) == 1) //check bottom right
+                  {
+                     TestMessage("Found Cross:D\n");
+                     count ++;
+                     //continue; //find next letter
+                  }
+            } 
+            if (findWord(row,col,word,DownLeft) == 1) //Top right conner of box
+            {
+               //if a second word is found then they cross
+               if (findWord(row+offset,col,word,UpLeft) == 1) //check bottom right
+                  {
+                     TestMessage("Found Cross:E\n");
+                     count ++;
+                     //continue; //find next letter
+                  }
+               if (findWord(row,col-offset,word,DownRight) == 1) //check top left
+                  {
+                     TestMessage("Found Cross:F\n");
+                     count ++;
+                     //continue; //find next letter
+                  }
+            }
+            if (findWord(row,col,word,DownRight) == 1) //top left conner of box
+            {
+               //if a second word is found then they cross
+               if (findWord(row+offset,col,word,UpRight) == 1) //check bottom Left
+                     {
+                        TestMessage("Found Cross:G\n");
+                        count ++;
+                        //continue; //find next letter
+                     }
+               else if (findWord(row,col+offset,word,DownLeft) == 1) //check top right
+                     {
+                        TestMessage("Found Cross:H\n");
+                        count ++;
+                        //continue; //find next letter
+                     }
+            }
+         }   
+      }
+      TestMessage("\ncount:" + to_string(count) + "\n");
+   }
+   //the count counts each crossing twice as each instance of a word triggers a check
+   count = count /2;
+   return count;
 }
