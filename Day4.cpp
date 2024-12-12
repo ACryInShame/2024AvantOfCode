@@ -271,13 +271,11 @@ int XwordSearch(string word)
                   {
                      TestMessage("Found Cross:A\n");
                      count ++;
-                     //continue; //find next letter
                   }
                if (findWord(row,col-offset,word,UpRight) == 1) //check bottom left
                   {
                      TestMessage("Found Cross:B\n");
                      count ++;
-                     //continue; //find next letter
                   }
             }
             if (findWord(row,col,word,UpRight) == 1) //Bottom Left conner of box
@@ -287,13 +285,11 @@ int XwordSearch(string word)
                   {
                      TestMessage("Found Cross:C\n");
                      count ++;
-                     //continue; //find next letter
                   }
                if (findWord(row,col+offset,word,UpLeft) == 1) //check bottom right
                   {
                      TestMessage("Found Cross:D\n");
                      count ++;
-                     //continue; //find next letter
                   }
             } 
             if (findWord(row,col,word,DownLeft) == 1) //Top right conner of box
@@ -303,13 +299,11 @@ int XwordSearch(string word)
                   {
                      TestMessage("Found Cross:E\n");
                      count ++;
-                     //continue; //find next letter
                   }
                if (findWord(row,col-offset,word,DownRight) == 1) //check top left
                   {
                      TestMessage("Found Cross:F\n");
                      count ++;
-                     //continue; //find next letter
                   }
             }
             if (findWord(row,col,word,DownRight) == 1) //top left conner of box
@@ -319,13 +313,11 @@ int XwordSearch(string word)
                      {
                         TestMessage("Found Cross:G\n");
                         count ++;
-                        //continue; //find next letter
                      }
                else if (findWord(row,col+offset,word,DownLeft) == 1) //check top right
                      {
                         TestMessage("Found Cross:H\n");
                         count ++;
-                        //continue; //find next letter
                      }
             }
          }   
