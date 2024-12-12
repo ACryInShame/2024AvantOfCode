@@ -15,7 +15,7 @@ int processMul (string tempString, int startPOS);
 
 void Day3Part1 ()
 {
-   	string FileName;
+   string FileName;
 	if (Testing)
 	FileName = "Puzzles\\AdventDay3 - TEST.txt";
 	else
